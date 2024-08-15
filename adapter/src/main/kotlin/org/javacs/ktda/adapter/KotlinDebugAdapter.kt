@@ -98,10 +98,12 @@ class KotlinDebugAdapter(
 
 		val vmArguments = (args["vmArguments"] as? String) ?: ""
 
+		val cp = (args["classpath"] as? String) ?: ""
+
 		setupCommonInitializationParams(args)
 
 		val config = LaunchConfiguration(
-			debugClassPathResolver(listOf(projectRoot)).classpathOrEmpty.map { it.compiledJar }.toSet(),
+			cp.split(":").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet(),
 			mainClass,
 			projectRoot,
 			vmArguments
