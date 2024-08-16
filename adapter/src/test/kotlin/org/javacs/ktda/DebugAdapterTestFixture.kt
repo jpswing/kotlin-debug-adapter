@@ -8,6 +8,7 @@ import org.eclipse.lsp4j.debug.DisconnectArguments
 import org.eclipse.lsp4j.debug.OutputEventArguments
 import org.eclipse.lsp4j.debug.services.IDebugProtocolClient
 import org.javacs.ktda.adapter.KotlinDebugAdapter
+import org.javacs.ktda.classpath.debugClassPathResolver
 import org.javacs.ktda.jdi.launch.JDILauncher
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -60,7 +61,8 @@ abstract class DebugAdapterTestFixture(
         debugAdapter.launch(mapOf(
             "projectRoot" to absoluteWorkspaceRoot.toString(),
             "mainClass" to mainClass,
-            "vmArguments" to vmArguments
+            "vmArguments" to vmArguments,
+            "classpath" to debugClassPathResolver(listOf(absoluteWorkspaceRoot)).classpathOrEmpty.map { it.compiledJar }.toSet().joinToString(":") { it.toString() }
         )).join()
         println("Launched")
     }
